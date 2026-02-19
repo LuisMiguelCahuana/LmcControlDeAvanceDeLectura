@@ -101,7 +101,7 @@ def main():
     st.markdown("""
     <style>
     .stApp {
-        background-image: url("https://i.ibb.co/ynvRSDZL/fondo-Reparto.jpg");
+        background-image: url("https://i.ibb.co/CpVsF4Km/Lecturador.png");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -473,6 +473,7 @@ st.markdown("""
 </style>
 <div class="footer">Desarrollado por Luis Miguel Cahuana Figueroa.</div>
 """, unsafe_allow_html=True)
+
 
 
 
