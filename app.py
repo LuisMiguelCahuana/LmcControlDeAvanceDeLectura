@@ -86,11 +86,7 @@ def download_excel_from_drive(file_id):
 def descargar_archivo(session, codigo, periodo, nombre_ciclo=None):
     zona = ZoneInfo("America/Lima")
     hoy = datetime.now(zona).strftime("%Y-%m-%d")
-    url = (
-        "http://sigof.distriluz.com.pe/plus/"
-        f"ComrepOrdenrepartos/ajax_reporte_excel_ordenes_historico/"
-        f"U/{periodo}/{codigo}/0/0/{hoy}/{hoy}/0/"
-    )
+    url = (f"http://sigof.distriluz.com.pe/plus/Reportes/ajax_ordenes_historico_xls/U/{hoy}/{hoy}/0/{codigo}/0/0/0/0/0/0/0/0/9/{periodo}")
     response = session.get(url, headers=headers)
 
     if response.headers.get("Content-Type") == \
@@ -100,7 +96,7 @@ def descargar_archivo(session, codigo, periodo, nombre_ciclo=None):
         return None, None
 
 def main():
-    st.set_page_config(page_title="Lmc Reparto", layout="wide")
+    st.set_page_config(page_title="Lmc Lectura", layout="wide")
 
     st.markdown("""
     <style>
@@ -159,8 +155,8 @@ def main():
 
     st.markdown("""
     <div style="display: flex; justify-content: center;">
-        <h3 style="color:#05DF72;">
-            🤖 Control de Avance Reparto de Recibos
+        <h3 style="color:#0078D7;">
+            🤖 Control de Avance Lecturas
         </h3>
     </div>
     """, unsafe_allow_html=True)
@@ -271,7 +267,7 @@ def main():
                     st.markdown(
                         "<p style='color:red; font-weight:bold; font-size:16px;'>"
                         "Humano, la información ya no está disponible en SIGOF WEB "
-                        "debido a que el periodo de reparto ha finalizado. "
+                        "debido a que el periodo de lectura ha finalizado. "
                         "Por favor, espere el siguiente periodo."
                         "</p>",
                         unsafe_allow_html=True
@@ -290,14 +286,14 @@ def main():
             for filename, contenido in st.session_state.archivos_descargados.items():
                 df_excel = pd.read_excel(BytesIO(contenido))
 
-                if {"lecturista", "resultado_evaluacion"}.issubset(df_excel.columns):
+                if {"lecturista", "resultado"}.issubset(df_excel.columns):
 
                     resumen = (
                         df_excel
                         .groupby("lecturista")
                         .agg(
                             Asignados=("lecturista", "size"),
-                            Avance=("resultado_evaluacion", lambda x: x.notna().sum())
+                            Avance=("resultado", lambda x: x.notna().sum())
                         )
                         .reset_index()
                     )
@@ -315,7 +311,7 @@ def main():
 
                     resumen["Descargados_temp"] = (
                         df_excel
-                        .groupby("lecturista")["resultado_evaluacion"]
+                        .groupby("lecturista")["resultado"]
                         .apply(lambda x: x.notna().sum())
                         .values
                     )
@@ -396,7 +392,7 @@ def main():
     
                     from openpyxl.styles import PatternFill, Font, Border, Alignment
     
-                    header_fill = PatternFill(start_color="00B050", end_color="00B050", fill_type="solid")
+                    header_fill = PatternFill(start_color="00B0F0", end_color="00B0F0", fill_type="solid")
                     header_font = Font(color="FFFFFF", bold=True)
                     no_border = Border()
     
@@ -443,7 +439,7 @@ def main():
                 st.download_button(
                     "📊 Humano Exportar Excel",
                     data=buffer_excel,
-                    file_name="Lmc_Resumen_por_Repartidor👷.xlsx",
+                    file_name="Lmc_Resumen_por_Lecturador👷.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
     # ===== CERRAR SESIÓN =====
@@ -477,6 +473,7 @@ st.markdown("""
 </style>
 <div class="footer">Desarrollado por Luis Miguel Cahuana Figueroa.</div>
 """, unsafe_allow_html=True)
+
 
 
 
