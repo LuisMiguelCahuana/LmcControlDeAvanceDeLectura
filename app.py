@@ -473,22 +473,3 @@ st.markdown("""
 </style>
 <div class="footer">Desarrollado por Luis Miguel Cahuana Figueroa.</div>
 """, unsafe_allow_html=True)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
