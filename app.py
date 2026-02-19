@@ -11,6 +11,7 @@ import io
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Border, Alignment
 from openpyxl.utils.dataframe import dataframe_to_rows
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # CONFIG
 login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
@@ -255,13 +256,24 @@ def main():
             else:
                 st.session_state.archivos_descargados.clear()
 
-                for nombre in seleccionados:
+                def tarea_descarga(nombre):
+                    # Cada hilo usa su propia sesión para evitar bloqueos
+                    nueva_session = requests.Session()
+                    nueva_session.cookies.update(st.session_state.session.cookies)
+                
                     codigo = st.session_state.ciclos_disponibles[nombre]
-                    contenido, filename = descargar_archivo(
-                        st.session_state.session, codigo, periodo, nombre
+                
+                    return descargar_archivo(
+                        nueva_session, codigo, periodo, nombre
                     )
-                    if contenido:
-                        st.session_state.archivos_descargados[filename] = contenido
+                
+                with ThreadPoolExecutor(max_workers=min(5, len(seleccionados))) as executor:
+                    futures = [executor.submit(tarea_descarga, nombre) for nombre in seleccionados]
+                
+                    for future in as_completed(futures):
+                        contenido, filename = future.result()
+                        if contenido:
+                            st.session_state.archivos_descargados[filename] = contenido
 
                 if not st.session_state.archivos_descargados:
                     st.markdown(
@@ -473,3 +485,4 @@ st.markdown("""
 </style>
 <div class="footer">Desarrollado por Luis Miguel Cahuana Figueroa.</div>
 """, unsafe_allow_html=True)
+
