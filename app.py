@@ -359,7 +359,7 @@ def main():
                     "Pendientes": "Pend",
                     "% de Avance": "% de Avance",
                     "% de Fotos": "% de Fotos",
-                    "Ciclo": "Ciclo Reparto"
+                    "Ciclo": "Ciclo Lectura"
                 })
                 # Forzar alineación a la derecha convirtiendo Des/Fin en número cuando sea posible
                 #df_final["Des/Fin"] = pd.to_numeric(df_final["Des/Fin"], errors="coerce").fillna(df_final["Des/Fin"])
@@ -473,6 +473,7 @@ st.markdown("""
 </style>
 <div class="footer">Desarrollado por Luis Miguel Cahuana Figueroa.</div>
 """, unsafe_allow_html=True)
+
 
 
 
