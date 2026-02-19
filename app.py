@@ -353,7 +353,7 @@ def main():
                 df_final = pd.concat(resumen_total, ignore_index=True)
 
                 df_final = df_final.rename(columns={
-                    "lecturista": "Repartidor",
+                    "lecturista": "Lecturador",
                     "Asignados": "Asig",
                     "Descargados / Finalizados": "Des/Fin",
                     "Pendientes": "Pend",
@@ -473,6 +473,7 @@ st.markdown("""
 </style>
 <div class="footer">Desarrollado por Luis Miguel Cahuana Figueroa.</div>
 """, unsafe_allow_html=True)
+
 
 
 
